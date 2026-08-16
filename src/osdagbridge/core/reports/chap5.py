@@ -4,6 +4,10 @@
 # =============================================================================
 from __future__ import annotations
 from typing import TYPE_CHECKING
+import io
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 from osdagbridge.core.utils.common import (
     KEY_DD_AS_BOT,
@@ -1073,6 +1077,77 @@ Fatigue Shear Resistance, $Q_r$ & IRC 22 Table 8 ($\phi d$, $N_{sc}$) & """
         _ed_shear_row,
     ]
     t522_content = "\n".join(_t522)
+    # Overall UR visualization for Section 5.5
+    _girder_ur = max(
+        (
+            float(chk.get("dcr") or 0.0)
+            for gd in _pg_522.values()
+            if not str(gd).startswith("EB")
+            for chk in (gd.get("checks") or [])
+        ),
+        default=0.0,
+    )
+    _deck_urs = []
+    for _dem_key, _cap_key in (
+        (KEY_DD_M_ULS_SAG, KEY_DD_MU_BOT),
+        (KEY_DD_M_ULS_HOG, KEY_DD_MU_TOP),
+        (KEY_DD_M_ULS_OH, KEY_DD_MU_OH),
+        (KEY_DD_PUNCH_VED, KEY_DD_VRD_C_MPA),
+        (KEY_DD_SHEAR_VED, KEY_DD_SHEAR_VRDC),
+    ):
+        if _dem_key == KEY_DD_M_ULS_OH and not _dk_oh:
+            continue
+        _cap = _dkv(_cap_key)
+        if _cap > 0:
+            _deck_urs.append(_dkv(_dem_key) / _cap)
+    _deck_ur = max(_deck_urs, default=0.0)
+    _cb_ur = 0.0
+    for _pair in _cb_pairs_522:
+        for _member in ("diagonal", "chord"):
+            for _force in ("compression", "tension"):
+                try:
+                    _cb_ur = max(
+                        _cb_ur,
+                        float(bridge.get_cb_efficiency(_pair, _member, _force)),
+                    )
+                except (TypeError, ValueError):
+                    pass
+    _ed_ur = _cb_ur if _ed_is_cb else float("nan")
+    _labels = [
+        "Steel Plate Girders",
+        "Concrete Deck Slab",
+        "Cross Bracing",
+        "End Diaphragms",
+    ]
+    _values = [_girder_ur, _deck_ur, _cb_ur, _ed_ur]
+    _fig, _ax = plt.subplots(figsize=(8, 4.5))
+    _bars = _ax.bar(_labels, _values)
+    _ax.axhline(1.0, color="red", linestyle="--", linewidth=1.5, label="UR = 1.0")
+    _ax.set_ylabel("Utilization Ratio")
+    _ax.set_title("Overall Utilization Ratio Summary")
+    _ax.legend()
+    for _bar, _value in zip(_bars, _values):
+        if _value == _value:
+            _ax.text(
+                _bar.get_x() + _bar.get_width() / 2,
+                _value,
+                f"{_value:.2f}",
+                ha="center",
+                va="bottom",
+            )
+        else:
+            _ax.text(
+                _bar.get_x() + _bar.get_width() / 2,
+                0.02,
+                "N/A",
+                ha="center",
+                va="bottom",
+            )
+    _fig.tight_layout()
+    _buf = io.BytesIO()
+    _fig.savefig(_buf, format="png", dpi=180, bbox_inches="tight")
+    plt.close(_fig)
+    bridge.payload.figure_data["overall_ur"] = _buf.getvalue()
 
     return r"""
 \chapter{Design Checks}
@@ -1764,6 +1839,11 @@ End diaphragms at the supports transfer transverse loads to the bearings, restra
 % ===========================
 
 \vspace{1em}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\textwidth]{images/overall_ur.png}
+\caption{\textbf{Overall Utilization Ratio Summary}}
+\end{figure}
 \begin{longtable}{|C{3.4cm}|L{4.5cm}|C{2.3cm}|C{2.3cm}|>{\centering\arraybackslash}p{1.6cm}|}
 \caption{\textbf{Overall Design Check Summary --- All Members}}
 \hline
