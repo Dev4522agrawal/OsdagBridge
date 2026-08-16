@@ -16,6 +16,15 @@ from osdagbridge.core.utils.common import (
     KEY_LL_IRC_CLASS_A,
     KEY_LL_IRC_CLASS_FATIGUE,
     KEY_LL_IRC_CLASS_SV,
+    KEY_BL_IRC_CLASS_A,
+    KEY_BL_IRC_AA_WHEELED,
+    KEY_BL_IRC_AA_TRACKED,
+    KEY_BL_IRC_70R_WHEELED,
+    KEY_BL_IRC_70R_TRACKED,
+    KEY_BL_IRC_70R_BOGIE,
+    KEY_BL_IRC_CLASS_SV,
+    KEY_BL_IRC_CLASS_FATIGUE,
+    KEY_BL_ECCENTRICITY,
     KEY_MATERIAL_DECK_DENSITY,
     KEY_MATERIAL_GIRDER_DENSITY,
     KEY_PL_SELF_WEIGHT_FACTOR,
@@ -130,6 +139,52 @@ def ch3_loads(input_dict):
     else:
         braking_force_str = "N/A"
 
+    braking_eccentricity = input_dict.get(
+        KEY_BL_ECCENTRICITY,
+        input_dict.get("loading.live_load.eccentricity", "")
+    )
+    vehicle_rows = []
+    for vehicle in vehicles:
+        if vehicle == "Class A":
+            total_load = sum(IRC6_2017.cl_204_1_ClassA_vehicle()["wheel_loads"])
+            impact = f"{1.0 + IRC6_2017.cl_208_2_impact_factor(float(span_m)):.3f}" if span not in (None, "") else "N/A"
+            braking = input_dict.get(KEY_BL_IRC_CLASS_A, False)
+        elif vehicle == "Class 70R (Wheeled)":
+            total_load = sum(IRC6_2017.cl_204_1_Class70R_vehicle_wheel()["wheel_loads"])
+            impact = "See IRC 6"
+            braking = input_dict.get(KEY_BL_IRC_70R_WHEELED, False)
+        elif vehicle == "Class 70R (Tracked)":
+            total_load = "N/A"
+            impact = "See IRC 6"
+            braking = input_dict.get(KEY_BL_IRC_70R_TRACKED, False)
+        elif vehicle == "Class SV":
+            total_load = IRC6_2017.cl_204_5_1_special_vehicle()["total_load_kN"]
+            impact = "N/A"
+            braking = input_dict.get(KEY_BL_IRC_CLASS_SV, False)
+        elif vehicle == "Class Fatigue":
+            total_load = sum(IRC6_2017.cl_204_6_fatigue_load()["wheel_loads"])
+            impact = "N/A"
+            braking = input_dict.get(KEY_BL_IRC_CLASS_FATIGUE, False)
+        else:
+            total_load = "N/A"
+            impact = "N/A"
+            braking = input_dict.get(
+                {
+                    "Class AA (Wheeled)": KEY_BL_IRC_AA_WHEELED,
+                    "Class AA (Tracked)": KEY_BL_IRC_AA_TRACKED,
+                    "Class 70R (Bogie)": KEY_BL_IRC_70R_BOGIE,
+                }.get(vehicle, ""),
+                False,
+            )
+        total_load_str = f"{float(total_load):.2f}" if isinstance(total_load, (int, float)) else total_load
+        vehicle_rows.append(
+            f"{_tex(vehicle)} & {total_load_str} & {impact} & "
+            f"{'Yes' if braking else 'No'} & "
+            f"{_tex(braking_force_str) if braking else '--'} & "
+            f"{_tex(str(braking_eccentricity)) if braking else '--'} \\\\"
+        )
+    vehicle_rows_str = "\n\\hline\n".join(vehicle_rows)
+    
     fp_mode  = input_dict.get(KEY_LL_FOOTPATH_PRESSURE_MODE, "")
     fp_value = input_dict.get(KEY_LL_FOOTPATH_PRESSURE_VALUE, "")
     if str(fp_mode).strip().lower() in ("as per irc 6", "as per irc6", "automatic"):
@@ -309,28 +364,35 @@ This section summarizes all loads applied to the bridge and the load combination
 \textnormal{Railing Load} & """ + (_render_value(input_dict, KEY_RL_LOAD_VALUE)) + r""" kN/m\sdstar{} \\[6pt]
 \hline
 \end{longtable}
-
 \vspace{1em}
-\begin{longtable}{|L{5.5cm}|p{10.0cm}|}
-\caption{\textbf{Live Loads (LL)}}
+
+\begin{longtable}{|L{3.0cm}|L{2.8cm}|L{2.5cm}|L{2.2cm}|L{2.5cm}|L{2.5cm}|}
+\caption{\textbf{Vehicle Live Loads (LL)}}
 \hline
-\textbf{parameter} & \textbf{value} \\
+\textbf{Vehicle} & \textbf{Total Load (kN)} & \textbf{Impact Factor} & \textbf{Braking Considered?} & \textbf{Braking Value (kN)} & \textbf{Eccentricity (m)} \\
 \hline
 \endfirsthead
 \hline
-\textbf{parameter} & \textbf{value} \\
+\textbf{Vehicle} & \textbf{Total Load (kN)} & \textbf{Impact Factor} & \textbf{Braking Considered?} & \textbf{Braking Value (kN)} & \textbf{Eccentricity (m)} \\
 \hline
 \endhead
-\textnormal{Vehicles Considered} & """ + _tex(vehicles_str) + r""" \\[6pt]
-\hline
-\textnormal{Impact Factor (IRC 6)} & """ + _tex(impact_factor_str) + r""" \\[6pt]
-\hline
-\textnormal{Braking Load (IRC 6)} & """ + _tex(braking_force_str) + r""" \\[6pt]
-\hline
-\textnormal{Footpath Live Load (if applicable)} & """ + (_render_value(input_dict, KEY_LL_FOOTPATH_PRESSURE_VALUE, ' kN/m\\textsuperscript{2}')) + r""" \\[6pt]
+""" + vehicle_rows_str + r"""
 \hline
 \end{longtable}
 
+\begin{longtable}{|L{5.5cm}|L{3.0cm}|L{4.0cm}|}
+\caption{\textbf{Footpath Live Load}}
+\hline
+\textbf{Parameter} & \textbf{Unit} & \textbf{Value} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+\endhead
+\textnormal{Footpath Live Load} & """ + _tex(fp_str) + r""" \\[6pt]
+\hline
+\end{longtable}
 \vspace{1em}
 \begin{longtable}{|L{5.5cm}|p{10.0cm}|}
 \caption{\textbf{Wind Load (WL) --- per IRC 6}}
