@@ -156,7 +156,7 @@ def preamble(project_name, job_number, report_date, report_version='Rev 0'):
 \documentclass[12pt,a4paper]{report}
 
 % Packages
-\usepackage[a4paper, margin=1in]{geometry}
+\usepackage[a4paper, margin=1in, includefoot]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -201,11 +201,13 @@ def preamble(project_name, job_number, report_date, report_version='Rev 0'):
 \setlength{\arrayrulewidth}{0.5pt}
 \setlength{\extrarowheight}{0.6pt}
 
-% Prevent tables from overflowing past the page bottom:
-% if fewer than 5 baseline-skips remain, break to the next page first.
-\BeforeBeginEnvironment{table}{\needspace{5\baselineskip}}
-\BeforeBeginEnvironment{longtable}{\needspace{5\baselineskip}}
+% Prevent tables from starting too close to the page bottom.
 
+% Reserve additional vertical space before tables.
+
+\BeforeBeginEnvironment{table}{\needspace{8\baselineskip}}
+
+\BeforeBeginEnvironment{longtable}{\needspace{8\baselineskip}}
 \definecolor{osdagGreen}{HTML}{91B014}
 
 \fancypagestyle{main}{
