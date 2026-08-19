@@ -2,6 +2,7 @@ import io
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from osdagbridge.core.reports.styles import TABLE_PADDING
 def ch7_quantities(input_dict, figure_data=None):
     # Material quantity charts
     _girder_wt = float(input_dict.get("steel_girders_wt_total", 0) or 0)
@@ -51,7 +52,7 @@ def ch7_quantities(input_dict, figure_data=None):
 \noindent\textbf{Table 7.1  Bill of Materials (Steel, Concrete, and Reinforcement Quantities)}
 
 \begingroup
-\setlength{\tabcolsep}{3.5pt}
+\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
 \begin{longtable}{|C{1.0cm}|L{3.8cm}|C{2.6cm}|C{1.8cm}|C{1.8cm}|C{1.8cm}|C{1.8cm}|}
 \hline
 \textbf{S.N.} & \textbf{Item Description} & \textbf{Volume} & \textbf{Quantity} & \textbf{Total Volume} & \textbf{Weight (MT)} & \textbf{Total Weight (MT)} \\

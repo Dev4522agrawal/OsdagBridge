@@ -119,6 +119,18 @@ from osdagbridge.core.utils.common import (
 )
 
 from osdagbridge.core.reports.report_utils import _tex
+from .styles import (
+    PAGE_MARGIN,
+    TABLE_PADDING,
+    TABLE_ROW_STRETCH,
+    LONGTABLE_PRE,
+    LONGTABLE_POST,
+    TABLE_RULE_WIDTH,
+    EXTRA_ROW_HEIGHT,
+    TABLE_NEEDSPACE,
+    OSDAG_GREEN,
+    DOCUMENT_LINE_SPACING,
+)
 from .executive_summary import executive_summary
 from .chap1 import ch1_project_info
 from .chap2 import ch2_input_parameters
@@ -156,7 +168,7 @@ def preamble(project_name, job_number, report_date, report_version='Rev 0'):
 \documentclass[12pt,a4paper]{report}
 
 % Packages
-\usepackage[a4paper, margin=1in, includefoot]{geometry}
+\usepackage[a4paper, margin=""" + PAGE_MARGIN + r""", includefoot]{geometry}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -193,22 +205,22 @@ def preamble(project_name, job_number, report_date, report_version='Rev 0'):
 \numberwithin{table}{chapter}
 \numberwithin{figure}{chapter}
 % Table layout and spacing: consistent padding, row height, and longtable pre/post skips
-\setlength{\tabcolsep}{6pt}
-\renewcommand{\arraystretch}{1.12}
-\setlength{\LTpre}{0pt}
-\setlength{\LTpost}{6pt}
+\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
+\renewcommand{\arraystretch}{""" + TABLE_ROW_STRETCH + r"""}
+\setlength{\LTpre}{""" + LONGTABLE_PRE + r"""}
+\setlength{\LTpost}{""" + LONGTABLE_POST + r"""}
 % Table rules (outline thickness) and small extra row height for clarity
-\setlength{\arrayrulewidth}{0.5pt}
-\setlength{\extrarowheight}{0.6pt}
+\setlength{\arrayrulewidth}{""" + TABLE_RULE_WIDTH + r"""}
+\setlength{\extrarowheight}{""" + EXTRA_ROW_HEIGHT + r"""}
 
 % Prevent tables from starting too close to the page bottom.
 
 % Reserve additional vertical space before tables.
 
-\BeforeBeginEnvironment{table}{\needspace{8\baselineskip}}
+\BeforeBeginEnvironment{table}{\needspace{""" + TABLE_NEEDSPACE + r"""}}
 
-\BeforeBeginEnvironment{longtable}{\needspace{8\baselineskip}}
-\definecolor{osdagGreen}{HTML}{91B014}
+\BeforeBeginEnvironment{longtable}{\needspace{""" + TABLE_NEEDSPACE + r"""}}
+\definecolor{osdagGreen}{HTML}{""" + OSDAG_GREEN + r"""}
 
 \fancypagestyle{main}{
   \fancyhf{}
@@ -254,7 +266,7 @@ def preamble(project_name, job_number, report_date, report_version='Rev 0'):
   \renewcommand{\footrule}{\vspace{-8pt}\color{osdagGreen}\hrule width\headwidth height 1pt \vspace{6pt}}
 }
 \pagestyle{main}
-\setstretch{1.15}
+\setstretch{""" + DOCUMENT_LINE_SPACING + r"""}
 
 % Custom Commands
 \newcommand{\placeholder}[1]{\textit{\textless #1\textgreater}}
@@ -891,10 +903,10 @@ def generate_report(payload, request):
             quantities = calculate_material_quantities(payload.inputs, payload.output_dict)
             payload.inputs.update(quantities)
 
-             # Generate Chapter 7 material charts using the calculated quantities.
+            # Generate Chapter 7 material charts using the calculated quantities.
             ch7_tex = ch7_quantities(payload.inputs, payload.figure_data)
 
-             # ── Write figure bytes into tmp_dir/images/ then free RAM immediately ──
+            # ── Write figure bytes into tmp_dir/images/ then free RAM immediately ──
             tmp_images = os.path.join(tmp_dir, 'images')
             os.makedirs(tmp_images, exist_ok=True)
             fig_paths = {}

@@ -71,6 +71,7 @@ from osdagbridge.core.utils.common import (
 )
 
 from osdagbridge.core.reports.report_utils import _render_value, get_girder_entries, _tex
+from osdagbridge.core.reports.styles import TABLE_PADDING
 
 def ch2_input_parameters(m, input_dict, output_dict=None):
     girder_entries = get_girder_entries(input_dict)
@@ -400,7 +401,7 @@ def _bracing_tables(input_dict, n_girders):
 \newpage
 
 \vspace{0.4em}
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
 \setlength\LTleft{0pt}
 \setlength\LTright{\fill}
 
@@ -420,7 +421,7 @@ def _bracing_tables(input_dict, n_girders):
 
 \vspace{0.4em}
 \noindent
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
 \setlength\LTleft{0pt}
 \setlength\LTright{\fill}
 

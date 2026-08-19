@@ -8,6 +8,7 @@ import io
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from osdagbridge.core.reports.styles import TABLE_PADDING
 
 from osdagbridge.core.utils.common import (
     KEY_DD_AS_BOT,
@@ -1705,7 +1706,7 @@ Cross bracing between adjacent plate girders provides lateral stability during c
 
 \vspace{0.4em}
 \noindent
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
 \setlength\LTleft{0pt}
 \setlength\LTright{\fill}
 
@@ -1776,7 +1777,7 @@ End diaphragms at the supports transfer transverse loads to the bearings, restra
 
 \vspace{0.4em}
 \noindent
-\setlength{\tabcolsep}{4pt}
+\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
 \setlength{\LTleft}{0pt}
 \setlength{\LTright}{\fill}
 
