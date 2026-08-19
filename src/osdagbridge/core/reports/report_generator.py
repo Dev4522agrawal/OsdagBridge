@@ -866,17 +866,7 @@ def generate_report(payload, request):
         # Write to temp dir first, compile there, then copy back
         with tempfile.TemporaryDirectory() as tmp_dir:
 
-            # ── Write figure bytes into tmp_dir/images/ then free RAM immediately ──
-            tmp_images = os.path.join(tmp_dir, 'images')
-            os.makedirs(tmp_images, exist_ok=True)
-            fig_paths = {}
-            for attr, img_bytes in list(payload.figure_data.items()):
-                if img_bytes:
-                    p = os.path.join(tmp_images, attr + '.png')
-                    with open(p, 'wb') as fh:
-                        fh.write(img_bytes)
-                    fig_paths[attr] = p.replace('\\', '/')
-            payload.figure_data.clear()  # bytes no longer needed — free RAM now
+           
 
             # ── Write title-page logos into tmp_dir/assets (auto-deleted) ──
             # Nothing is left next to the PDF. Latex paths are relative to tmp_dir.
@@ -900,6 +890,21 @@ def generate_report(payload, request):
             # Compute and inject quantities for Chapter 7
             quantities = calculate_material_quantities(payload.inputs, payload.output_dict)
             payload.inputs.update(quantities)
+
+             # Generate Chapter 7 material charts using the calculated quantities.
+            ch7_tex = ch7_quantities(payload.inputs, payload.figure_data)
+
+             # ── Write figure bytes into tmp_dir/images/ then free RAM immediately ──
+            tmp_images = os.path.join(tmp_dir, 'images')
+            os.makedirs(tmp_images, exist_ok=True)
+            fig_paths = {}
+            for attr, img_bytes in list(payload.figure_data.items()):
+                if img_bytes:
+                    p = os.path.join(tmp_images, attr + '.png')
+                    with open(p, 'wb') as fh:
+                        fh.write(img_bytes)
+                    fig_paths[attr] = p.replace('\\', '/')
+            payload.figure_data.clear()  # bytes no longer needed — free RAM now
 
             # ── Assemble LaTeX document (fig_paths now has tmp_dir paths) ──
             bridge = ReportDataBridge(payload.output_dict, payload.inputs, payload)
@@ -930,7 +935,7 @@ def generate_report(payload, request):
             if 'drawings' in secs and payload.options.include_figures:
                 doc_parts.append(ch6_drawings(fig_paths))
 
-            doc_parts.append(ch7_quantities(payload.inputs))
+            doc_parts.append(ch7_tex)
 
             mode = str(payload.inputs.get(KEY_DESIGN_MODE, "Optimized")).strip().lower()
             is_custom = mode in {"custom", "customized"}
