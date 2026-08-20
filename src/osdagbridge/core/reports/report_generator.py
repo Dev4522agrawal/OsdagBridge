@@ -906,6 +906,13 @@ def generate_report(payload, request):
             # Generate Chapter 7 material charts using the calculated quantities.
             ch7_tex = ch7_quantities(payload.inputs, payload.figure_data)
 
+            # Create the data bridge before generating chapter-specific figures.
+            bridge = ReportDataBridge(payload.output_dict, payload.inputs, payload)
+            span_m = float(payload.inputs.get(KEY_SPAN, 0) or 0)
+            # Generate Chapter 5 before writing figure bytes to disk.
+            # Chapter 5 creates the overall_ur figure in payload.figure_data.
+            ch5_tex = ch5_design_checks(payload.design_checks, bridge)
+
             # ── Write figure bytes into tmp_dir/images/ then free RAM immediately ──
             tmp_images = os.path.join(tmp_dir, 'images')
             os.makedirs(tmp_images, exist_ok=True)
@@ -943,7 +950,7 @@ def generate_report(payload, request):
             if 'analysis' in secs:
                 doc_parts.append(ch4_analysis(payload.analysis_summary, fig_paths, bridge, span_m))
             if 'design_checks' in secs:
-                doc_parts.append(ch5_design_checks(payload.design_checks, bridge))
+                doc_parts.append(ch5_tex)
             if 'drawings' in secs and payload.options.include_figures:
                 doc_parts.append(ch6_drawings(fig_paths))
 
