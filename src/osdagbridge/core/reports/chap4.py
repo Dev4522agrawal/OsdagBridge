@@ -84,19 +84,18 @@ A grillage model was used for structural analysis. The deck is idealized as a gr
 \vspace{1em}
 \begingroup
 \footnotesize
-\setlength{\tabcolsep}{""" + TABLE_PADDING + r"""}
+\setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{""" + TABLE_ROW_STRETCH + r"""}
-
 \begin{longtable}{|
->{\centering\arraybackslash}p{3.1cm}|
->{\centering\arraybackslash}p{1.7cm}|
->{\centering\arraybackslash}p{1.2cm}|
->{\centering\arraybackslash}p{1.3cm}|
->{\centering\arraybackslash}p{1.7cm}|
->{\centering\arraybackslash}p{1.2cm}|
->{\centering\arraybackslash}p{1.3cm}|
->{\centering\arraybackslash}p{1.6cm}|
->{\centering\arraybackslash}p{1.6cm}|}
+>{\centering\arraybackslash}p{3.0cm}|
+>{\centering\arraybackslash}p{1.5cm}|
+>{\centering\arraybackslash}p{1.0cm}|
+>{\centering\arraybackslash}p{1.1cm}|
+>{\centering\arraybackslash}p{1.5cm}|
+>{\centering\arraybackslash}p{1.0cm}|
+>{\centering\arraybackslash}p{1.1cm}|
+>{\centering\arraybackslash}p{1.4cm}|
+>{\centering\arraybackslash}p{1.4cm}|}
 
 \caption{\textbf{Summary of Maximum Demands}}\\
 \hline
