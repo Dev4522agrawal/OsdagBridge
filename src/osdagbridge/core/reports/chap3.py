@@ -422,6 +422,8 @@ This section summarizes all loads applied to the bridge and the load combination
 \hline
 \end{longtable}
 
+\newpage
+
 \vspace{1em}
 \begin{longtable}{|L{5.5cm}|p{10.0cm}|}
 \caption{\textbf{Earthquake Load (EL) --- per IRC 6}}
@@ -473,7 +475,7 @@ This section summarizes all loads applied to the bridge and the load combination
 \textnormal{Temperature Rise / Fall for Design} & +""" + (_render_value(input_dict, KEY_TL_TEMP_RISE)) + r""" $^\circ$C / \textminus{}""" + (_render_value(input_dict, KEY_TL_TEMP_FALL)) + r""" $^\circ$C \\[6pt]
 \hline
 \end{longtable}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|C{4.0cm}|p{11.5cm}|}
 \caption{\textbf{Load Combinations}}

@@ -1197,7 +1197,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 """ + t52_content + r"""
 \end{longtable}
 \noindent\textit{Note: IS 800:2007 Table 2}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|C{2.5cm}|C{3.5cm}|C{3.5cm}|>{\centering\arraybackslash}p{4.2cm}|C{1.8cm}|}
 \caption{\textbf{Moment Capacity Check}}
@@ -1216,7 +1216,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 """ + t53_content + r"""
 \end{longtable}
 \noindent\textit{Note: IRC 22 Cl. 603.3.1, IS 800 Cl. 8.2.1}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|C{2.5cm}|C{3.5cm}|C{3.5cm}|>{\centering\arraybackslash}p{4.2cm}|C{1.8cm}|}
 \caption{\textbf{Shear Capacity Check}}
@@ -1254,7 +1254,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 """ + t55_content + r"""
 \end{longtable}
 \noindent\textit{Note: IRC 22 Cl. 603.3.3.3}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|C{2.5cm}|C{3.5cm}|C{3.5cm}|>{\centering\arraybackslash}p{4.2cm}|C{1.8cm}|}
 \caption{\textbf{Lateral Torsional Buckling Check -- Construction Stage}}
@@ -1294,6 +1294,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 """ + t57_content + r"""
 \end{longtable}
 """ + t58_block + r"""
+\newpage
 \vspace{1em}
 
 \begin{longtable}{|C{2.5cm}|L{3.5cm}|C{3.5cm}|>{\centering\arraybackslash}p{4.2cm}|C{1.8cm}|}
@@ -1334,7 +1335,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 """ + t510_content + r"""
 \end{longtable}
 \noindent\textit{Note: IRC 22 Cl. 604.3.2}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|C{2.5cm}|L{3.5cm}|C{3.5cm}|>{\centering\arraybackslash}p{3.5cm}|C{2.5cm}|}
 \caption{\textbf{Serviceability -- Maximum Stress Limitation}}
@@ -1373,7 +1374,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 """ + t512_content + r"""
 \end{longtable}
 \noindent\textit{Note: IRC 22 Cl. 605 --- governing of normal and shear fatigue (worst by DCR). Capacity reduction factor $\mu_r$ applied where plate thickness > 25 mm.}
-
+\newpage
 \vspace{1em}
 \vspace{0.4em}
 \begin{longtable}{|C{1.6cm}|>{\centering\arraybackslash}p{3.6cm}|C{2.4cm}|C{2.0cm}|C{2.1cm}|C{1.7cm}|C{1.5cm}|}
@@ -1412,7 +1413,7 @@ This section presents all structural design checks performed by OsdagBridge. For
 \endhead
 """ + t514_content + r"""
 \end{longtable}
-
+\newpage
 \vspace{1em}
 
 \setlength\LTleft{0pt}
@@ -1502,7 +1503,7 @@ The reinforced concrete deck slab is designed per IRC~112:2011 (flexure, shear, 
 \textnormal{Governing Live Load Case} & """ + _dkf(KEY_DD_VEHICLE) + r""" \\[6pt]
 \hline
 \end{longtable}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|C{3.0cm}|C{3.5cm}|C{3.0cm}|>{\centering\arraybackslash}p{4.2cm}|C{1.8cm}|}
 \caption{\textbf{Deck Slab --- Flexure Check: Interior Panel (Pigeaud's Method)}}
@@ -1656,7 +1657,7 @@ One-Way Shear Check & $V_{Ed} \leq V_{Rd,c}$ & """ + (f"{_dkv(KEY_DD_SHEAR_VED) 
 \hline
 \end{longtable}
 \noindent\textit{Note: IRC 112 Cl. 10.3.2. Shear reinforcement not provided in deck slabs; capacity relies on concrete and main reinforcement.}
-
+\newpage
 \vspace{1em}
 \begin{longtable}{|L{5.5cm}|>{\centering\arraybackslash}p{4.1cm}|>{\centering\arraybackslash}p{4.1cm}|C{1.8cm}|}
 \caption{\textbf{Reinforcement Detailing Summary (Deck Slab)}}
@@ -1774,7 +1775,7 @@ Cross bracing between adjacent plate girders provides lateral stability during c
 % ===========================
 
 End diaphragms at the supports transfer transverse loads to the bearings, restrain the bottom flanges against lateral displacement, and maintain the girder cross-section geometry during construction and in service. They are designed per IS~800:2007 and IRC~24:2010 Cl.~507.
-
+\newpage
 \vspace{1em}
 
 \vspace{0.4em}
